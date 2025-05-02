@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  12
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes      //describes how time derivative is discretized
+{
+    default         backward;                      //
+}
+
+gradSchemes                                     //how gradients are calculated
+{
+    default         Gauss linear;               //Standard central difference approximation.
+}
+
+divSchemes                                      //convection terms in governing equations
+{
+    default             none;                   //means they must all be specified seperately
+
+    div(phi,U)          Gauss linear; //velocity     old --linearUpwind grad(U)
+    div(phi,e)          Gauss limitedLinear 1;    //enthalpy/energy
+    div(phi,T)          Gauss limitedLinear 1;          //temperature
+
+    div(phi,(p|rho))    Gauss linear;           //pressure and density - second order
+    div(phi,K)          Gauss linear;           //turbulent kinetic energy
+
+    //div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;       //viscous stress - linear interpolation scheme
+}
+
+laplacianSchemes                                //how laplacian terms are discretized
+{
+    default         Gauss linear uncorrected;     //Linear interpolation (second order accurate) with explicit non-orthogonal correction
+}
+
+interpolationSchemes                            //how field values are interpolated between points
+{
+    default         linear;                     //Linear interpolation (second order accurate)
+}
+
+snGradSchemes                                   //how normal gradients are computed at cell faces
+{
+    default         uncorrected;                  //explicit correction
+}
+
+
+
+// ************************************************************************* //
